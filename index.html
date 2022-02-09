@@ -5,10 +5,23 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <script src="app.js"></script>
+    <script src="app.js" defer></script>
     <title>TIC-TAC-TOE</title>
 </head>
 <body>
-    
+    <div class="display-none full-height">
+        <div id="title">TIC-TAC-TOE</div>
+        <div id="options">      
+            <input type="radio" class="item1" name="human" id="human" value="human">
+            <label for="human" class="item2">vs HUMAN</label> 
+            <input type="radio" class="item3" name="ai" id="ai" value="ai">
+            <label for="ai" class="item4">vs AI</label>
+            <button id="start-game" class="item5">START GAME</button>
+        </div>
+    </div>
+
+    <div id="game-board">
+
+    </div>
 </body>
 </html>

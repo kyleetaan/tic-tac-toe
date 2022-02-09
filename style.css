@@ -1,0 +1,53 @@
+html {
+    box-sizing: border-box;
+  }
+  *, *:before, *:after {
+    box-sizing: inherit;
+  }
+
+.full-height{
+  height: 100vh;
+}
+
+.display-none {
+  display:none;
+}
+
+.intro {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  flex-direction: column;
+  gap: 100px;
+}
+
+#title{
+  font-size: 100px;
+}
+
+#options{
+  display: grid;
+  grid-gap: 20px 30px;
+}
+
+.item1{
+  grid-row-start: 1;
+  grid-column-end: 1;
+}
+
+.item2{
+  grid-row-start: 1;
+  grid-column-end: 2;
+  font-size: 40px;
+}
+
+.item4{
+  font-size: 40px;
+}
+
+.item5{
+  grid-row-start: 3;
+  grid-column-end: 2;
+  font-size: 30px;
+}
