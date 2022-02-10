@@ -13,6 +13,7 @@ html {
   display:none;
 }
 
+  /* intro */
 .intro {
   display: flex;
   justify-content: center;
@@ -50,4 +51,36 @@ html {
   grid-row-start: 3;
   grid-column-end: 2;
   font-size: 30px;
+}
+
+  /* game board */
+
+#game-window{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 100px;
+}
+
+#game-board {
+  width: 600px;
+	height: 600px;
+	margin: 0 auto;
+  background-color: white;
+  color: black;
+  border: 2px solid black;
+  border-radius: 10px;
+	display: grid;
+	grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+
+}
+
+.board {
+  border: 6px solid black;
+  font-weight: bold;
+  font-size: 4em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

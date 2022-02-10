@@ -23,7 +23,7 @@ const gameBoard = (function () {
     function getArray() {
         return _boardArray;
     }
-    
+
     populateArray();
 
     return {
@@ -34,10 +34,32 @@ const gameBoard = (function () {
 
 //factory for player
 const player = () => {
+    const _xAttack = "X";
+    const _oAttack = "O";
+
 
 }
 
-
+//module for display
 const displayController = (() => {
+    let boardArr = gameBoard.getArray();
     //do something
+    function populateBoard() {
+        for(let i = 0; i < boardArr.length; i++){
+            if(boardArr[i] !== "_"){
+
+            }
+        }
+    }
 })();
+
+
+//working get index of div
+const test = document.getElementById("test");
+test.addEventListener('click', testFunction)
+
+function testFunction() {
+    const index = [...board.children].indexOf(this);
+    console.log(index)
+}
+
