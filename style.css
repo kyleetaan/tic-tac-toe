@@ -84,3 +84,14 @@ html {
   justify-content: center;
   align-items: center;
 }
+
+/* end window */
+
+#end-window{
+  display: none;
+  height: 100vh;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 100px;
+}

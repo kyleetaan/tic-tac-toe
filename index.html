@@ -9,7 +9,7 @@
     <title>TIC-TAC-TOE</title>
 </head>
 <body>
-    <div class="display-none full-height">
+    <div id="start" class="display-none full-height">
         <div id="title">TIC-TAC-TOE</div>
         <div id="options">      
             <input type="radio" class="item1" name="human" id="human" value="human">
@@ -33,6 +33,11 @@
             <div class="board"></div>
             <div class="board"></div>
         </div>
+    </div>
+
+    <div id="end-window">
+        <div id="winner"></div>
+        <button id="play-again">Play Again?</button>
     </div>
 </body>
 </html>

@@ -28,6 +28,11 @@ const gameBoard = (function () {
         return _boardArray;
     }
 
+    function emptyArray() {
+        _boardArray.length = 0;
+        populateArray();
+    }
+
     populateArray();
 
     return {
@@ -54,11 +59,11 @@ const player = (sign) => {
 const displayController = (() => {
     const boardArr = gameBoard.getArray();
     const _board = document.getElementById("game-board");
-    const domArr = [..._board.children];
+    const _domArr = [..._board.children];
 
     function updateBoard () {
-        domArr.forEach(element => {
-            element.textContent = boardArr[domArr.indexOf(element)];
+        _domArr.forEach(element => {
+            element.textContent = boardArr[_domArr.indexOf(element)];
         })
     }
     
@@ -70,27 +75,27 @@ const displayController = (() => {
 
 //module for game
 const gameController = (() => {
-    const playerOne = player("X");
-    const playerTwo = player("Y");
+    const _playerOne = player("X");
+    const _playerTwo = player("Y");
     const _board = document.getElementById("game-board");
-    const domArr = [..._board.children];
+    const _domArr = [..._board.children];
     let round = 0;
 
-    domArr.forEach(element => {
-        element.addEventListener('click', gameLoop)
+    _domArr.forEach(element => {
+        element.addEventListener('click', roundChecker)
     })
     
-    function gameLoop() {
+    function roundChecker() {
         if(round % 2 !== 0){
-            placePiece(playerTwo.getSign(), this);
+            placePiece(_playerTwo.getSign(), this);
         }
         else{
-            placePiece(playerOne.getSign(), this);
+            placePiece(_playerOne.getSign(), this);
         }
         checkWin();
     }
 
-    const winningConditions = [
+    const _winningConditions = [
         [0,1,2],
         [3,4,5],
         [6,7,8],
@@ -101,27 +106,54 @@ const gameController = (() => {
         [2,4,6]
     ];
     
-    function placePiece(sign, that){  
+    function placePiece(sign, that){   // should be in displayController
         if(that.textContent === ""){
             round++;
-            const index = domArr.indexOf(that);
+            const index = _domArr.indexOf(that);
             gameBoard.updateArray(index, sign);
-            that.textContent = sign;
+            displayController.updateBoard();
         }
     }
     
     function checkWin() {
         const gameArray = gameBoard.getArray();
-        for(let i = 0; i < winningConditions.length; i++){       
-            if(gameArray[winningConditions[i][0]] === gameArray[winningConditions[i][1]] &&
-            gameArray[winningConditions[i][1]] === gameArray[winningConditions[i][2]] && 
-            gameArray[winningConditions[i][0]] !== ""){
-                // function here
+        for(let i = 0; i < _winningConditions.length; i++){       
+            if(gameArray[_winningConditions[i][0]] === gameArray[_winningConditions[i][1]] &&
+            gameArray[_winningConditions[i][1]] === gameArray[_winningConditions[i][2]] && 
+            gameArray[_winningConditions[i][0]] !== ""){
+                //function display win
+                endOfGame(gameArray[_winningConditions[i][0]]);
                 break;
             }
         }
+
     }
-    
+
+    function endOfGame(symbol) {
+        let winner = "";
+
+        if(symbol === "X"){
+            winner = "Player1";
+        }
+        else{
+            winner = "Player2";
+        }
+
+        const gameWindow = document.getElementById("game-window");
+        gameWindow.style.display = "none";
+
+        const endWindow = document.getElementById("end-window");
+        endWindow.style.display = "flex";
+
+        const winnerDiv = document.getElementById("winner");
+        winnerDiv.textContent = `${winner} wins!`;
+
+        const playAgain = document.getElementById("play-again");
+        playAgain.addEventListener('click', () => {
+            document.location.reload(true);
+        })
+    }
+
     return {
         
     }
