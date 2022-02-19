@@ -1,12 +1,15 @@
-const intro = document.querySelector(".intro");
-const startGame = document.getElementById("start-game");
+const startOfGame = (function (){
 
+    const intro = document.querySelector("#intro");
+    const startButton = document.getElementById("start-game");
 
-//change function to the one selecting a player
-startGame.addEventListener('click', () => {
-    intro.classList.remove("intro");
-    intro.classList.add("display-none");
-});
+    startButton.addEventListener('click', showBoard);
+
+    function showBoard(){
+        const selected = document.querySelector('input[name="player"]:checked').value;
+        console.log(selected);
+    }
+})();
 
 //module for game board
 const gameBoard = (function () {
@@ -106,7 +109,7 @@ const gameController = (() => {
         [2,4,6]
     ];
     
-    function placePiece(sign, that){   // should be in displayController
+    function placePiece(sign, that){  
         if(that.textContent === ""){
             round++;
             const index = _domArr.indexOf(that);
