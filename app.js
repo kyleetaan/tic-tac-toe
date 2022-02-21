@@ -8,6 +8,12 @@ const startOfGame = (function (){
     function showBoard(){
         const selected = document.querySelector('input[name="player"]:checked').value;
         console.log(selected);
+        if(selected === "human"){
+
+        }
+        else if(selected === "ai"){
+            
+        }
     }
 })();
 
@@ -69,9 +75,35 @@ const displayController = (() => {
             element.textContent = boardArr[_domArr.indexOf(element)];
         })
     }
+
+    function endOfGame(symbol) {
+        let winner = "";
+
+        if(symbol === "X"){
+            winner = "Player1";
+        }
+        else{
+            winner = "Player2";
+        }
+
+        const gameWindow = document.getElementById("game-window");
+        gameWindow.style.display = "none";
+
+        const endWindow = document.getElementById("end-window");
+        endWindow.style.display = "flex";
+
+        const winnerDiv = document.getElementById("winner");
+        winnerDiv.textContent = `${winner} wins!`;
+
+        const playAgain = document.getElementById("play-again");
+        playAgain.addEventListener('click', () => {
+            document.location.reload(true);
+        })
+    }
     
     return {
         updateBoard: updateBoard,
+        endOfGame: endOfGame
 
     }
 })();
@@ -112,6 +144,7 @@ const gameController = (() => {
     function placePiece(sign, that){  
         if(that.textContent === ""){
             round++;
+            // this is where the ai should go in
             const index = _domArr.indexOf(that);
             gameBoard.updateArray(index, sign);
             displayController.updateBoard();
@@ -125,49 +158,20 @@ const gameController = (() => {
             gameArray[_winningConditions[i][1]] === gameArray[_winningConditions[i][2]] && 
             gameArray[_winningConditions[i][0]] !== ""){
                 //function display win
-                endOfGame(gameArray[_winningConditions[i][0]]);
+                displayController.endOfGame(gameArray[_winningConditions[i][0]]);
                 break;
             }
         }
 
     }
 
-    function endOfGame(symbol) {
-        let winner = "";
-
-        if(symbol === "X"){
-            winner = "Player1";
-        }
-        else{
-            winner = "Player2";
-        }
-
-        const gameWindow = document.getElementById("game-window");
-        gameWindow.style.display = "none";
-
-        const endWindow = document.getElementById("end-window");
-        endWindow.style.display = "flex";
-
-        const winnerDiv = document.getElementById("winner");
-        winnerDiv.textContent = `${winner} wins!`;
-
-        const playAgain = document.getElementById("play-again");
-        playAgain.addEventListener('click', () => {
-            document.location.reload(true);
-        })
-    }
+    
 
     return {
         
     }
 })();
 
-//working get index of div
-// const test = document.getElementById("test");
-// test.addEventListener('click', testFunction)
+function aiController() {
 
-// function testFunction() {
-//     const index = [...board.children].indexOf(this);
-//     console.log(index)
-// }
-
+}
