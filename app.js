@@ -24,12 +24,17 @@ const gameBoard = (function () {
         displayController.updateBoard();
     }
 
+    function isIndexEmpty(index) {
+        return _boardArray[index] === "" ? true: false;
+    }
+
     populateArray();
 
     return {
         getArray : getArray,
         updateArray: updateArray,
         emptyArray: emptyArray,
+        isIndexEmpty: isIndexEmpty,
     }
 })();
 
@@ -125,13 +130,25 @@ const gameController = (() => {
     
     function roundChecker() {
         const index = _domArr.indexOf(this);
-        if(round % 2 !== 0){ // ai should go here
-            placeInGameArray(index, _playerTwo.getSign());
+        if(gameBoard.isIndexEmpty(index) === true){
+            if(round % 2 !== 0){ 
+                placeInGameArray(index, _playerTwo.getSign());
+            }
+            else{
+                placeInGameArray(index, _playerOne.getSign());
+                // ai attacks after human
+                if(selected === "ai"){
+                    while(true){
+                        const aiAttackIndex = aiController();
+                        if(gameBoard.isIndexEmpty(aiAttackIndex) === true){
+                            placeInGameArray(aiAttackIndex, _playerTwo.getSign());
+                            break;
+                        }
+                    }
+                }
+            }
+            
         }
-        else{
-            placeInGameArray(index, _playerOne.getSign());
-        }
-        checkWin();
     }
 
     const reset = document.getElementById("reset");
@@ -148,13 +165,11 @@ const gameController = (() => {
         [2,4,6]
     ];
     
-    function placeInGameArray(index, sign){  // should refactor dapat wala na ito
-        console.log(gameBoard.getArray[index])
-        // if(that.textContent === ""){
-            round++;
-            gameBoard.updateArray(index, sign);
-            displayController.updateBoard();
-        // }
+    function placeInGameArray(index, sign){
+        round++;
+        gameBoard.updateArray(index, sign);
+        displayController.updateBoard();
+        checkWin();
     }
     
     function checkWin() {
