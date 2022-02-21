@@ -1,22 +1,3 @@
-const startOfGame = (function (){
-
-    const intro = document.querySelector("#intro");
-    const startButton = document.getElementById("start-game");
-
-    startButton.addEventListener('click', showBoard);
-
-    function showBoard(){
-        const selected = document.querySelector('input[name="player"]:checked').value;
-        console.log(selected);
-        if(selected === "human"){
-
-        }
-        else if(selected === "ai"){
-            
-        }
-    }
-})();
-
 //module for game board
 const gameBoard = (function () {
     const _boardArray = [];
@@ -40,13 +21,15 @@ const gameBoard = (function () {
     function emptyArray() {
         _boardArray.length = 0;
         populateArray();
+        displayController.updateBoard();
     }
 
     populateArray();
 
     return {
         getArray : getArray,
-        updateArray: updateArray
+        updateArray: updateArray,
+        emptyArray: emptyArray,
     }
 })();
 
@@ -69,11 +52,22 @@ const displayController = (() => {
     const boardArr = gameBoard.getArray();
     const _board = document.getElementById("game-board");
     const _domArr = [..._board.children];
+    const intro = document.querySelector("#intro");
+    const gameWindow = document.getElementById("game-window");
+    
 
     function updateBoard () {
         _domArr.forEach(element => {
             element.textContent = boardArr[_domArr.indexOf(element)];
         })
+    }
+
+    function showBoard() {
+        intro.style.display = "none";
+        gameWindow.style.display = "flex";
+        const selected = document.querySelector('input[name="player"]:checked').value;
+
+        return selected;
     }
 
     function endOfGame(symbol) {
@@ -103,7 +97,8 @@ const displayController = (() => {
     
     return {
         updateBoard: updateBoard,
-        endOfGame: endOfGame
+        endOfGame: endOfGame,
+        showBoard: showBoard,
 
     }
 })();
@@ -113,22 +108,34 @@ const gameController = (() => {
     const _playerOne = player("X");
     const _playerTwo = player("Y");
     const _board = document.getElementById("game-board");
-    const _domArr = [..._board.children];
     let round = 0;
+    let selected = "";
 
+    const startButton = document.getElementById("start-game");
+    startButton.addEventListener('click', getTypeOfPlayer);
+
+    function getTypeOfPlayer() {
+        selected = displayController.showBoard();
+    }
+
+    const _domArr = [..._board.children];
     _domArr.forEach(element => {
         element.addEventListener('click', roundChecker)
     })
     
     function roundChecker() {
-        if(round % 2 !== 0){
-            placePiece(_playerTwo.getSign(), this);
+        const index = _domArr.indexOf(this);
+        if(round % 2 !== 0){ // ai should go here
+            placeInGameArray(index, _playerTwo.getSign());
         }
         else{
-            placePiece(_playerOne.getSign(), this);
+            placeInGameArray(index, _playerOne.getSign());
         }
         checkWin();
     }
+
+    const reset = document.getElementById("reset");
+    reset.addEventListener('click', gameBoard.emptyArray);
 
     const _winningConditions = [
         [0,1,2],
@@ -141,14 +148,13 @@ const gameController = (() => {
         [2,4,6]
     ];
     
-    function placePiece(sign, that){  
-        if(that.textContent === ""){
+    function placeInGameArray(index, sign){  // should refactor dapat wala na ito
+        console.log(gameBoard.getArray[index])
+        // if(that.textContent === ""){
             round++;
-            // this is where the ai should go in
-            const index = _domArr.indexOf(that);
             gameBoard.updateArray(index, sign);
             displayController.updateBoard();
-        }
+        // }
     }
     
     function checkWin() {
@@ -165,13 +171,18 @@ const gameController = (() => {
 
     }
 
-    
+    function aiController() {
+        function getRandomInt(min, max) {
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        } //mdn 
+
+        return getRandomInt(0,8);
+    }
 
     return {
-        
+        selected: selected,
     }
 })();
 
-function aiController() {
-
-}
