@@ -79,10 +79,13 @@ const displayController = (() => {
         let winner = "";
 
         if(symbol === "X"){
-            winner = "Player1";
+            winner = "Player1 wins!";
+        }
+        else if(symbol === "O"){
+            winner = "Player2 wins!";
         }
         else{
-            winner = "Player2";
+            winner = "It's a TIE!"
         }
 
         const gameWindow = document.getElementById("game-window");
@@ -92,7 +95,7 @@ const displayController = (() => {
         endWindow.style.display = "flex";
 
         const winnerDiv = document.getElementById("winner");
-        winnerDiv.textContent = `${winner} wins!`;
+        winnerDiv.textContent = `${winner}`;
 
         const playAgain = document.getElementById("play-again");
         playAgain.addEventListener('click', () => {
@@ -111,7 +114,8 @@ const displayController = (() => {
 //module for game
 const gameController = (() => {
     const _playerOne = player("X");
-    const _playerTwo = player("Y");
+    const _playerTwo = player("O");
+    const gameArray = gameBoard.getArray();
     const _board = document.getElementById("game-board");
     let round = 0;
     let selected = "";
@@ -137,22 +141,29 @@ const gameController = (() => {
             else{
                 placeInGameArray(index, _playerOne.getSign());
                 // ai attacks after human
-                if(selected === "ai"){
+                if(selected === "ai" && round < 9){
                     while(true){
-                        const aiAttackIndex = aiController();
-                        if(gameBoard.isIndexEmpty(aiAttackIndex) === true){
+                        let aiAttackIndex = aiController();
+                        if(gameBoard.isIndexEmpty(aiAttackIndex)){
                             placeInGameArray(aiAttackIndex, _playerTwo.getSign());
                             break;
                         }
                     }
+                    
                 }
             }
             
+        }
+        if(round === 9){
+            displayController.endOfGame("");
         }
     }
 
     const reset = document.getElementById("reset");
     reset.addEventListener('click', gameBoard.emptyArray);
+    reset.addEventListener('click', () => {
+        round = 0;
+    })
 
     const _winningConditions = [
         [0,1,2],
@@ -169,21 +180,27 @@ const gameController = (() => {
         round++;
         gameBoard.updateArray(index, sign);
         displayController.updateBoard();
-        checkWin();
+        if(checkWin()["ifWin"]){
+            //function display win
+            displayController.endOfGame(checkWin()["symbol"]);
+        }
     }
     
     function checkWin() {
-        const gameArray = gameBoard.getArray();
         for(let i = 0; i < _winningConditions.length; i++){       
             if(gameArray[_winningConditions[i][0]] === gameArray[_winningConditions[i][1]] &&
             gameArray[_winningConditions[i][1]] === gameArray[_winningConditions[i][2]] && 
             gameArray[_winningConditions[i][0]] !== ""){
-                //function display win
-                displayController.endOfGame(gameArray[_winningConditions[i][0]]);
-                break;
+                return {
+                    "ifWin": true,
+                    "symbol": gameArray[_winningConditions[i][0]],
+                };
             }
         }
-
+        return {
+            "ifWin": false,
+            "symbol": "",
+        };
     }
 
     function aiController() {
@@ -193,11 +210,16 @@ const gameController = (() => {
             return Math.floor(Math.random() * (max - min + 1)) + min;
         } //mdn 
 
+        function minimax(board, isMax){
+
+        }
+
         return getRandomInt(0,8);
     }
 
     return {
         selected: selected,
+        round: round,
     }
 })();
 
