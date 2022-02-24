@@ -142,20 +142,20 @@ const gameController = (() => {
                 placeInGameArray(index, _playerOne.getSign());
                 // ai attacks after human
                 if(selected === "ai" && round < 9){
-                    while(true){
-                        let aiAttackIndex = aiController();
-                        if(gameBoard.isIndexEmpty(aiAttackIndex)){
-                            placeInGameArray(aiAttackIndex, _playerTwo.getSign());
-                            break;
-                        }
-                    }
+                    let aiAttackIndex = aiController.bestAttack();
+                    placeInGameArray(aiAttackIndex, _playerTwo.getSign());
+
+                    // while(true){
+                    //     let aiAttackIndex = aiController();
+                    //     if(gameBoard.isIndexEmpty(aiAttackIndex)){
+                    //         placeInGameArray(aiAttackIndex, _playerTwo.getSign());
+                    //         break;
+                    //     }
+                    // }
                     
                 }
             }
             
-        }
-        if(round === 9){
-            displayController.endOfGame("");
         }
     }
 
@@ -180,46 +180,115 @@ const gameController = (() => {
         round++;
         gameBoard.updateArray(index, sign);
         displayController.updateBoard();
-        if(checkWin()["ifWin"]){
+        if(checkWin(gameArray)["ifWin"]){
             //function display win
-            displayController.endOfGame(checkWin()["symbol"]);
+            displayController.endOfGame(checkWin(gameArray)["symbol"]);
         }
     }
     
-    function checkWin() {
+    function checkWin(board) {
         for(let i = 0; i < _winningConditions.length; i++){       
-            if(gameArray[_winningConditions[i][0]] === gameArray[_winningConditions[i][1]] &&
-            gameArray[_winningConditions[i][1]] === gameArray[_winningConditions[i][2]] && 
-            gameArray[_winningConditions[i][0]] !== ""){
+            if(board[_winningConditions[i][0]] === board[_winningConditions[i][1]] &&
+            board[_winningConditions[i][1]] === board[_winningConditions[i][2]] && 
+            board[_winningConditions[i][0]] !== ""){
                 return {
                     "ifWin": true,
-                    "symbol": gameArray[_winningConditions[i][0]],
+                    "symbol": board[_winningConditions[i][0]],
                 };
             }
+        }
+        if(!board.includes("")){
+            return {
+                "ifWin": true,
+                "symbol": "tie",
+            };
         }
         return {
             "ifWin": false,
             "symbol": "",
         };
-    }
+    };
 
-    function aiController() {
-        function getRandomInt(min, max) {
-            min = Math.ceil(min);
-            max = Math.floor(max);
-            return Math.floor(Math.random() * (max - min + 1)) + min;
-        } //mdn 
-
-        function minimax(board, isMax){
-
-        }
-
-        return getRandomInt(0,8);
-    }
+    
 
     return {
-        selected: selected,
-        round: round,
+        checkWin: checkWin,
     }
 })();
 
+const aiController = ( () => {
+    
+    //create a function that will call yung minmax
+    function bestAttack(){
+        const boardArr = [...gameBoard.getArray()];
+        let bestScore = -Infinity;
+        let bestIndex;
+        //loop in gameboard array
+        for(let i = 0; i < 9; i++){
+            if(boardArr[i] === ""){
+                boardArr[i] = "O";
+                let score = minimax(boardArr, 0, false);
+                boardArr[i] = "";
+                if(score > bestScore){
+                    bestScore = score;
+                    bestIndex = i;
+                }
+            };
+        };
+        return bestIndex;
+    };
+
+
+    function minimax(board, depth, isMax){ 
+        if(gameController.checkWin(board)["ifWin"]){
+            console.log(board);
+            let symbol = gameController.checkWin(board)["symbol"];
+            if(symbol === "X"){
+                // console.log(`winner x!`)
+                return -1;
+            }
+            else if(symbol === "O"){
+                // console.log(`winner o!`)
+                return 1;
+            }
+            else {
+                console.log(`tie!`)
+                return 0;
+            }
+        }
+
+        
+        //maximizing
+        if(isMax){
+            let bestScore = -Infinity;
+            for(let i = 0; i < 9; i++){
+                if(board[i] === ""){
+                    board[i] = "O";
+                    let score = minimax(board, depth + 1, false)
+                    board[i] = "";
+                    bestScore = Math.max(score, bestScore);
+                };
+            };
+            return bestScore;
+        }
+        else{//minimizing
+            let bestScore = Infinity;
+            for(let i = 0; i < 9; i++){
+                if(board[i] === ""){
+                    board[i] = "X";
+                    let score = minimax(board, depth + 1, true)
+                    board[i] = "";
+                    bestScore = Math.min(score, bestScore);
+                }
+            }
+            return bestScore;
+        }
+
+        
+        
+    }
+
+    return {
+        bestAttack: bestAttack,
+    }
+})();
