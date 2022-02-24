@@ -143,16 +143,7 @@ const gameController = (() => {
                 // ai attacks after human
                 if(selected === "ai" && round < 9){
                     let aiAttackIndex = aiController.bestAttack();
-                    placeInGameArray(aiAttackIndex, _playerTwo.getSign());
-
-                    // while(true){
-                    //     let aiAttackIndex = aiController();
-                    //     if(gameBoard.isIndexEmpty(aiAttackIndex)){
-                    //         placeInGameArray(aiAttackIndex, _playerTwo.getSign());
-                    //         break;
-                    //     }
-                    // }
-                    
+                    placeInGameArray(aiAttackIndex, _playerTwo.getSign()); 
                 }
             }
             
@@ -218,7 +209,7 @@ const gameController = (() => {
 
 const aiController = ( () => {
     
-    //create a function that will call yung minmax
+    //create a function that will call minmax
     function bestAttack(){
         const boardArr = [...gameBoard.getArray()];
         let bestScore = -Infinity;
@@ -241,18 +232,14 @@ const aiController = ( () => {
 
     function minimax(board, depth, isMax){ 
         if(gameController.checkWin(board)["ifWin"]){
-            console.log(board);
             let symbol = gameController.checkWin(board)["symbol"];
             if(symbol === "X"){
-                // console.log(`winner x!`)
                 return -1;
             }
             else if(symbol === "O"){
-                // console.log(`winner o!`)
                 return 1;
             }
             else {
-                console.log(`tie!`)
                 return 0;
             }
         }
